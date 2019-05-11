@@ -37,12 +37,13 @@
             font-size: 28px;
             margin: 0 auto;
             width: 10em;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
         }
 
         .calculator::before,
         .calculator::after {
             content: " ";
-            display: table;
         }
 
         .calculator::after {
@@ -60,13 +61,28 @@
 
         .viewer {
             color: #c97874;
-            float: left;
+            /*
+            background-color:grey;
+            */
+            /*float: left;*/
+            padding-right: 10px;
             line-height: 3em;
             text-align: right;
             text-overflow: ellipsis;
             overflow: hidden;
             width: 7.5em;
             height: 3em;
+            grid-column: 1 / 6;
+        }
+
+        .clear {
+            /*grid-column: 1 / 2;*/
+        }
+
+        .equals {
+            grid-column: 4 / 6;
+            grid-row: 5 / 9;
+            height: 11em;
         }
 
         button {
@@ -74,7 +90,7 @@
             background: rgba(42, 50, 113, 0.28);
             color: #6cacc5;
             cursor: pointer;
-            float: left;
+            /*float: left;*/
             font: inherit;
             margin: 0.25em;
             width: 2em;
@@ -326,13 +342,17 @@
             }
 
             .viewer {
-                width: 8.5em;
+                width: 11.5em;
             }
 
             button {
                 margin: 0.5em;
             }
         }
+
+    #col1 {
+        grid-column: 1 / 2;
+    }
     </style>
     <title>
         Isaac's Calculator
@@ -343,30 +363,37 @@
     <h1>Isaac's Calculator</h1>
 
     <div id="calculator" class="calculator">
-
-        <button id="clear" class="clear">C</button>
-
         <div id="viewer" class="viewer">0</div>
 
-        <button class="num" data-num="7">7</button>
-        <button class="num" data-num="8">8</button>
-        <button class="num" data-num="9">9</button>
-        <button data-ops="plus" class="ops">+</button>
+        <button id="col1" data-ops="plus" class="ops">A</button>
+        <button data-ops="plus" class="ops">B</button>
+        <button data-ops="plus" class="ops">C</button>
+        <button data-ops="plus" class="ops">D</button>
 
-        <button class="num" data-num="4">4</button>
-        <button class="num" data-num="5">5</button>
-        <button class="num" data-num="6">6</button>
+        <button id="col1" data-ops="plus" class="ops">+</button>
         <button data-ops="minus" class="ops">-</button>
-
-        <button class="num" data-num="1">1</button>
-        <button class="num" data-num="2">2</button>
-        <button class="num" data-num="3">3</button>
         <button data-ops="times" class="ops">&times;</button>
-
-        <button class="num" data-num="0">0</button>
-        <button class="num" data-num=".">.</button>
-        <button id="equals" class="equals" data-result="">=</button>
         <button data-ops="divided by" class="ops">&divide;</button>
+
+        <button id="equals" class="equals" data-result="">=</button>
+
+        <button id="col1" class="num" data-num="7">7</button>
+        <button id="col2" class="num" data-num="8">8</button>
+        <button id="col3" class="num" data-num="9">9</button>
+
+        <button id="col1" class="num" data-num="4">4</button>
+        <button id="col2" class="num" data-num="5">5</button>
+        <button id="col3" class="num" data-num="6">6</button>
+
+        <button id="col1" class="num" data-num="1">1</button>
+        <button id="col2" class="num" data-num="2">2</button>
+        <button id="col3" class="num" data-num="3">3</button>
+
+        <button id="col1" class="num" data-num="0">0</button>
+        <button id="col2" class="num" data-num=".">.</button>
+        <button id="clear" class="clear">C</button>
+
+
     </div>
 
     <button id="reset" class="reset">Reset Universe?</button>
