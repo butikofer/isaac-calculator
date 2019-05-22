@@ -83,8 +83,8 @@
             grid-column: 4 / 6;
             grid-row: 5 / 9;
             height: 11em;
-            background-color:lightsalmon;
-            color:white;
+            background-color: lightsalmon;
+            color: white;
         }
 
         button {
@@ -352,9 +352,9 @@
             }
         }
 
-    #col1 {
-        grid-column: 1 / 2;
-    }
+        #col1 {
+            grid-column: 1 / 2;
+        }
     </style>
     <title>
         Isaac's Calculator
@@ -367,10 +367,10 @@
     <div id="calculator" class="calculator">
         <div id="viewer" class="viewer">0</div>
 
-        <button id="col1" data-ops="plus" class="ops">A</button>
-        <button data-ops="plus" class="ops">B</button>
-        <button data-ops="plus" class="ops">C</button>
-        <button data-ops="plus" class="ops">D</button>
+        <button id="col1" data-ops="to fraction" class="ops">😱</button>
+        <button data-ops="divide with remainder" class="ops">&divide;R</button>
+        <button data-ops="factors" class="ops">FAC</button>
+        <button data-ops="multiples" class="ops">MUL</button>
 
         <button id="col1" data-ops="plus" class="ops">+</button>
         <button data-ops="minus" class="ops">-</button>
@@ -463,6 +463,40 @@ Clean up structure
             equals.setAttribute("data-result", ""); // Reset result in attr
         };
 
+        var toFraction = function (number) {
+            var gcd = function (a, b) {
+                if (b < 0.0000001) return a;               // Since there is a limited precision we need to limit the value.
+
+                return gcd(b, Math.floor(a % b));           // Discard any fractions due to limitations in precision.
+            };
+
+            var fraction = number;
+            var len = fraction.toString().length - 2;
+
+            var denominator = Math.pow(10, len);
+            var numerator = fraction * denominator;
+
+            var divisor = gcd(numerator, denominator);    // Should be 5
+
+            numerator /= divisor;                         // Should be 687
+            denominator /= divisor;                       // Should be 2000
+
+            return (Math.floor(numerator) + '/' + Math.floor(denominator));
+        }
+
+        var findFactors = (number) => Array
+            .from(Array(number + 1), (_, i) => i)
+            .filter(i => number % i === 0)
+
+        var findMultiples = (start, numMultiples) => {
+            var result = [];
+            for (var i = 1; i <= numMultiples; i++) {
+                result.push(start * i);
+            }
+
+            return result;
+        }
+
         // When: Equals is clicked. Calculate result
         var displayNum = function () {
 
@@ -489,20 +523,45 @@ Clean up structure
                     break;
 
                 // ISAAC: enter in new operators here!
+                case "to fraction":
+                    console.log(oldNum);
+                    resultNum = toFraction(oldNum);
+                    console.log(resultNum);
+                    break;
+
+                case "divide with remainder":
+                    var quotient = Math.floor(oldNum / theNum);
+                    var remainder = oldNum % theNum;
+                    resultNum = quotient + " R" + remainder;
+                    break;
+
+                case "factors":
+                    var factors = findFactors(oldNum);
+                    resultNum = factors.join(",");
+                    break;
+
+                case "multiples":
+                    var multiples = findMultiples(oldNum, 5);
+                    //var multiples = findMultiples(oldNum, theNum);
+                    resultNum = multiples.join(",");
+                    break;
 
                 // If equal is pressed without an operator, keep number and continue
                 default:
                     resultNum = theNum;
             }
 
-            // If NaN or Infinity returned
-            if (!isFinite(resultNum)) {
-                if (isNaN(resultNum)) { // If result is not a number; set off by, eg, double-clicking operators
-                    resultNum = "You broke it!";
-                } else { // If result is infinity, set off by dividing by zero
-                    resultNum = "Look at what you've done";
-                    el('#calculator').classList.add("broken"); // Break calculator
-                    el('#reset').classList.add("show"); // And show reset button
+            // If a string is returned (in the case of some of Isaac's operations)
+            if (typeof resultNum !== "string") {
+                // If NaN or Infinity returned
+                if (!isFinite(resultNum)) {
+                    if (isNaN(resultNum)) { // If result is not a number; set off by, eg, double-clicking operators
+                        resultNum = "You broke it!";
+                    } else { // If result is infinity, set off by dividing by zero
+                        resultNum = "Look at what you've done";
+                        el('#calculator').classList.add("broken"); // Break calculator
+                        el('#reset').classList.add("show"); // And show reset button
+                    }
                 }
             }
 
@@ -522,6 +581,7 @@ Clean up structure
             theNum = "";
             viewer.innerHTML = "0";
             equals.setAttribute("data-result", resultNum);
+            decimalEntered = false;
         };
 
         /* The click events */
